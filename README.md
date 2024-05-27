@@ -13,7 +13,7 @@ This repo will build all required AWS Networking and resources to run a 3 tiered
 
 ## Provision AWS Infrastructure
 ```
-cd quickstart/infra
+cd /infra
 ```
 Update the `my.auto.tfvars` for your environment.  Configure your existing AWS Key Pair or copy a local SSH key to your region using this script `./scripts/push-aws-sshkey-multiregion.sh`. Review the prefix being used for resource names, the EKS version, private zone name for route53, and external  CIDR for SSH access. 
 
