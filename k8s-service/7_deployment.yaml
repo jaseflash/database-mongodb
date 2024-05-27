@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tasky
+  namespace: tasky
+  labels:
+    app: tasky
+    version: v1
+    service: tasky
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tasky
+  template:
+    metadata:
+      namespace: tasky
+      labels:
+        app: tasky
+        service: tasky
+    spec:
+      serviceAccountName: tasky
+      containers:
+        - name: tasky
+          # Public image, Not Private
+          image: ppresto/tasky:1.2
+          ports:
+            - containerPort: 8080
+          env:
+            - name: 'MONGODB_URI'
+              value: 'mongodb://tasky:TaskMeIfY0uCan!@ext-mongodb.private.jase.corp:27017'
+            - name: 'SECRET_KEY'
+              value: 'secret123'
+        - name: network-multitool
+          image: wbitt/network-multitool:latest
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN", "SYS_TIME"]
