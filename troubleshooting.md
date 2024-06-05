@@ -1,3 +1,6 @@
+
+![image](https://github.com/jaseflash/tasky/assets/84444515/b3da0579-eba3-4559-8f34-641cfe84544f)
+
 <!-- TOC -->
 
 - [Troubleshooting](#troubleshooting)
