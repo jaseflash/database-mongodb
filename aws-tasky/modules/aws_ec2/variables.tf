@@ -44,7 +44,7 @@ variable "instance_profile_name" {
 variable "ec2_key_pair_name" {
   description = "An existing EC2 key pair used to access the bastion server."
   type        = string
-  default     = "jase"
+  default     = "jasevm"
 }
 
 variable "vpc_id" {

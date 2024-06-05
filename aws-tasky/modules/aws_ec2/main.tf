@@ -1,3 +1,7 @@
+#provider "aws" {
+#  region = "us-west-2"
+# }
+
 ## Bastion ec2
 
 data "aws_region" "current" {}
@@ -12,9 +16,9 @@ data "aws_ssm_parameter" "ubuntu-focal" {
 resource "aws_instance" "ec2" {
   ami                  = var.use_latest_ami ? data.aws_ssm_parameter.ubuntu-focal.value : var.ami_id
   instance_type        = "t3.micro"
-  key_name             = var.ec2_key_pair_name
+  key_name             = "jasevm" # var.ec2_key_pair_name
   iam_instance_profile = var.instance_profile_name
-  #vpc_security_group_ids      = [aws_security_group.bastion.id]
+ # vpc_security_group_ids      = [aws_security_group.bastion.id]
   vpc_security_group_ids      = concat([aws_security_group.bastion.id], var.security_group_ids)
   subnet_id                   = var.subnet_id
   associate_public_ip_address = true
