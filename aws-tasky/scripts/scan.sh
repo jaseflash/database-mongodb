@@ -7,7 +7,7 @@ python3 /Users/jasonbroadbent/Projects/security/namespacehound/nshound.py --kube
 #python3 /Users/jasonbroadbent/Projects/security/namespacehound/nshound.py --kubeconfig /Users/jasonbroadbent/.kube/config -c -o table
 echo
 echo "Running trivy image scan on tasky"
-trivy image --severity HIGH,CRITICAL ppresto/tasky:1.2
+trivy image --severity HIGH,CRITICAL jaseflash1234/tasky:1.3
 echo
 echo "Running trivy k8s deployment scan on tasky namespace"
 trivy k8s --namespace=tasky --report=summary deploy
