@@ -1,7 +1,7 @@
 variable "bucket_name" {
   description = "Unique name to identify all resources. Try using your name."
   type        = string
-  default     = "pp-s3-backup"
+  default     = "jase-s3-backup"
 }
 
 

@@ -50,7 +50,7 @@ resource "aws_iam_role_policy" "s3" {
       },
       {
         "Effect" : "Allow",
-        "Action" : ["s3:GetObject","s3:PutObject","s3:PutObjectAcl","s3:DeleteObject"],
+        "Action" : ["s3:GetObject",s3:AbortMultipartUpload","s3:PutObject","s3:ListBucket","s3:GetObjectVersion","s3:PutObjectAcl","s3:ListMultipartUploadParts","s3:DeleteObject"],
         "Resource" : ["*"]
       }
     ]

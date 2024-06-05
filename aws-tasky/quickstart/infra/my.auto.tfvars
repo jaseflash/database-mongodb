@@ -1,6 +1,6 @@
 prefix                      = "jase"
 eks_cluster_version         = "1.29"
-ec2_key_pair_name           = "jase"
+ec2_key_pair_name           = "jasevm"
 route53_zone                = "jbroadbent.aws.sbx.hashicorpdemo.com"
 allowed_bastion_cidr_blocks = ["52.119.127.230/32"]
 
