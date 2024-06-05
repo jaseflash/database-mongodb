@@ -5,7 +5,7 @@
 # Set aws_keypair_name to the EC2 key-name in each AWS Region
 #   it must be unique in each region within your account
 #aws_keypair_name="$USER"  # or some name that is meaningful to you
-aws_keypair_name="jase"  # or some name that is meaningful to you
+aws_keypair_name="jasevm"  # or some name that is meaningful to you
 
 # path to PUBLIC ssh key that you want pushed to AWS
 publickeyfile="$HOME/.ssh/id_rsa.pub"
