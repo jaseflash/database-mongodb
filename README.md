@@ -12,6 +12,13 @@ This repo will build all required AWS Networking and resources to run a 3 tiered
 - jq
 
 ## Provision AWS Infrastructure
+
+# Within the infra directory this will deploy all the kubernetes, vms, networking, security and services by calling the sub modules with the main teraform code.
+# Provisioning of all necessary pvc within clusters will also be done also. Scripts can be ran alongside the deploymnets or part of the main depolyments
+
+# The tasky service will be deployed within its own namespace sitting behind an ALB which you can call to gain access to the service and connectivity 
+# to the database to push any new tasks and show fully working system
+
 ```
 cd /infra
 ```
