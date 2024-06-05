@@ -1,5 +1,3 @@
-
-
 #!/bin/bash
 # CloudInit **** config files for checking issues and everything else ********
 # stored in: /var/lib/cloud/instances/instance-id/user-data.txt
