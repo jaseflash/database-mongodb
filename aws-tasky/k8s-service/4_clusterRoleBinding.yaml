@@ -3,6 +3,18 @@ kind: ClusterRoleBinding
 metadata:
  name: cluster-admin
  namespace: tasky
+
+@@ -157,7 +160,7 @@ rules:
+       - list
+       - watch
+   - apiGroups:
+-      - "extensions"
++      - "networking.k8s.io"
+     resources:
+       - ingresses
+     verbs:
+
+
  annotations:
     rbac.authorization.kubernetes.io/autoupdate: "true"
 subjects:
