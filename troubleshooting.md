@@ -19,7 +19,7 @@
 
 SCP file through public bastion from K8s cluster to an internal VM.
 ```
-scp -o 'ProxyCommand ssh ubuntu@54.202.45.196 -W %h:%p' ./ca.pem ubuntu@10.17.1.130:/tmp/ca.pem
+scp -o 'ProxyCommand ssh ubuntu@54.202.45.196 -W %h:%p' ./ca.pem ubuntu@35.162.230.xxx:/tmp/ca.pem
 ```
 
 Generate AWS kubeconfig file for VM (`cluster-name: jase-usw2-consul1`)
