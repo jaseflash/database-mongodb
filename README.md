@@ -1,7 +1,3 @@
-![image]
-
-
-
 # aws-tasky
 This repo will build all required AWS Networking and resources to run a 3 tiered MongoDB app.  This includes EC2, EKS, S3, Route53, and AWS Config.  There are known insecure configurations in this repo.  The follow steps will highlight some of these and attempt to exploit them.
 
