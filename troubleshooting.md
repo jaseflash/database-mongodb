@@ -57,19 +57,39 @@ nc -zv  35.162.230.47 27017  # TCP 27017
 ### EKS - Login / Set Context
 Set default Namespace in current context
 ```
-kubectl config set-context --current --namespace=consul
+aws eks --region $(terraform output -raw region) update-kubeconfig --name $(terraform output -raw cluster_name)
+
+kubectl config view
+
+kubectl config current-context
+
+kubectl config set-context --current --namespace=tasky
+
+alias k=kubectl
+
+alias kubectl=kubecolor
+
+
 ```
 
 Label node
 ```
 kubectl label nodes ip-10-15-1-126.us-west-2.compute.internal nodetype=tasky
+
+tcpdump -X ##### –----- give packet output..... look for any rogue info
+
+kubectl describe service tasky -n tasky -----> service info
+
+nmap -oG dns_scan_svc_1 -sn -Pn -R 10.15.0.0/16
+grep 'Host' dns_scan_svc_1 | grep -v '()'  ------> all ports up
+
 ```
 
-### Attach debug container to pod to run additional commands (tcpdump, netstat, dig, curl, etc...)
+### Attach debug container to pod to run additional commands (tcpdump, netstat, dig, curl, etc...) ------> optional need time to setup :) 
 ```
-kubectl -n fortio-baseline debug -it $POD_NAME --image=nicolaka/netshoot
-#kubectl -n fortio-baseline debug -q -i $POD_NAME --image=nicolaka/netshoot
-kubectl -n web debug -it $POD_NAME --target consul-dataplane --image nicolaka/netshoot -- tcpdump -i eth0 dst port 20000 -A
+# kubectl -n fortio-baseline debug -it $POD_NAME --image=nicolaka/netshoot
+# kubectl -n fortio-baseline debug -q -i $POD_NAME --image=nicolaka/netshoot
+# kubectl -n web debug -it $POD_NAME --target consul-dataplane --image nicolaka/netshoot -- tcpdump -i eth0 dst port 20000 -A
 ```
 
 ### Get Security Context of all Pods in all namespaces
