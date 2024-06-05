@@ -1,9 +1,6 @@
 <!-- TOC -->
 
 - [Troubleshooting](#troubleshooting)
-  - [SSH - Bastion Host](#ssh---bastion-host)
-    - [Manually create SSH Key, and AWS keypair](#manually-create-ssh-key-and-aws-keypair)
-  - [AWS EC2 / VM](#aws-ec2--vm)
     - [AWS EC2 - Helpful Commands](#aws-ec2---helpful-commands)
     - [AWS EC2 - Review Cloud-init execution](#aws-ec2---review-cloud-init-execution)
     - [AWS EC2 - logs](#aws-ec2---logs)
@@ -16,27 +13,6 @@
 <!-- /TOC -->
 # Troubleshooting
 
-## SSH - Bastion Host
-SSH to bastion host for access to internal networks.  The TF is leveraging your AWS Key Pair for the Bastion/EC2 and EKS nodes.  Use `Agent Forwarding` to ssh to your nodes.  Locally in your terminal find your key and setup ssh.
-```
-ssh-add -L  # Find SSH Keys added
-ssh-add ${HOME}/.ssh/hcp-consul  # If you dont have any keys then add your key being used in TF.
-ssh -A ubuntu@<BASTION_IP>  # pass your key in memory to the ubuntu Bastion Host you ssh to.
-ssh -A ec2_user@<K8S_NODE_IP> # From bastion use your key to access a node in the private network.
-ssh -A -J ubuntu@<PUBLIC_BASTION_IP> ubuntu@<PRIVATE_EC2_IP>
-```
-
-### Manually create SSH Key, and AWS keypair
-```
-ssh-keygen -t rsa -b 4096 -f /tmp/hcp-consul -N ''
-publickeyfile="/tmp/tfc-hcpc-pipelines/hcp-consul.pub"
-aws_keypair_name=my-aws-keypair-$(date +%Y%m%d)
-echo aws ec2 import-key-pair \
-    --region "$AWS_DEFAULT_REGION" \
-    --key-name "$aws_keypair_name" \
-    --public-key-material "fileb://$publickeyfile"
-```
-
 ## AWS EC2 / VM
 
 ### AWS EC2 - Helpful Commands
@@ -46,9 +22,9 @@ SCP file through public bastion from K8s cluster to an internal VM.
 scp -o 'ProxyCommand ssh ubuntu@54.202.45.196 -W %h:%p' ./ca.pem ubuntu@10.17.1.130:/tmp/ca.pem
 ```
 
-Generate AWS kubeconfig file for VM (`cluster-name: presto-usw2-consul1`)
+Generate AWS kubeconfig file for VM (`cluster-name: jase-usw2-consul1`)
 ```
-aws eks --region us-west-2 update-kubeconfig --name presto-usw2-consul1 --kubeconfig ./kubeconfig
+aws eks --region us-west-2 update-kubeconfig --name jase-usw2-consul1 --kubeconfig ./kubeconfig
 ```
 
 ### AWS EC2 - Review Cloud-init execution
@@ -56,7 +32,7 @@ When a user data script is processed, it is copied to and run from /var/lib/clou
 ```
 sudo cat /var/lib/cloud/instance/user-data.txt
 ```
-The cloud-init log captures console output of the user-data script run.
+The cloud-init log captures mongo output of the user-data script run.
 ```
 sudo cat /var/log/cloud-init-output.log
 ```
@@ -64,16 +40,16 @@ sudo cat /var/log/cloud-init-output.log
 ### AWS EC2 - logs
 To investigate systemd errors starting consul use `journalctl`.  
 ```
-journalctl -u consul -xn | less
+journalctl -u mongod -xn | less
 ```
 pipe to less to avoid line truncation in terminal
 
 ### AWS EC2 - Test client connectivity with nc
 ```
 ping $ip
-nc -zv $ip 8301   # TCP Test to remote port
-nc -zvu $ip 8301  # UDP 8301
-nc -zv $ip 8300   # TCP 8300
+nc -zv 35.162.230.47 27017   # TCP Test to remote port
+nc -zvu 35.162.230.47 27017  # UDP 27017
+nc -zv  35.162.230.47 27017  # TCP 27017
 ```
 
 ## EKS / Kubernetes
@@ -86,7 +62,7 @@ kubectl config set-context --current --namespace=consul
 
 Label node
 ```
-kubectl label nodes ip-10-16-1-177.us-west-2.compute.internal nodetype=consul
+kubectl label nodes ip-10-15-1-126.us-west-2.compute.internal nodetype=tasky
 ```
 
 ### Attach debug container to pod to run additional commands (tcpdump, netstat, dig, curl, etc...)
