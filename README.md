@@ -1,4 +1,3 @@
-![alt text](image-2.png)
 
 # aws-tasky
 This repo will build all required AWS Networking and resources to run a 3 tiered MongoDB app.  This includes EC2, EKS, S3, Route53, and AWS Config.  There are known insecure configurations in this repo.  The follow steps will highlight some of these and attempt to exploit them.
@@ -222,3 +221,6 @@ Delete other namespaces to show you have cluster-admin privileges
 * [OWASP Cheatsheets Repo](https://github.com/OWASP/CheatSheetSeries)
 * [2023 OSS Security Report](https://go.snyk.io/state-of-open-source-security-report-2023-dwn-typ.html)
 * [HackTricksCloud](https://cloud.hacktricks.xyz/pentesting-cloud/kubernetes-security/abusing-roles-clusterroles-in-kubernetes)
+
+
+[def]: image-2.png
