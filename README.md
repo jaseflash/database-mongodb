@@ -155,12 +155,12 @@ aws ec2 create-key-pair --key-name pp-keypair-test
 EC2 Instance Creation ******More secure WAYS**********
 ```
 aws ec2 run-instances \
-  --image-id ami-07fe743f8d6d95a40 \
-  --instance-type t2.micro \
-  --subnet-id subnet-06f0cbd01b59f1b53 \
-  --security-group-ids sg-01c640cca4b063fbd \
-  --associate-public-ip-address \
-  --key-name jaseflash-ptfe-dev-key
+  --image-id ami-0c4ccec3a7c74d2e9 \
+  --instance-type t2.medium \
+  --subnet-id subnet-0d3a4ed16bb44ee2f \
+  --security-group-ids sg-023622fec955dc0d8 \
+  --associate-public-35.162.230.47 \
+  --key-name jasevm
 ```
 
 Get the external IP to SSH to the new instance
