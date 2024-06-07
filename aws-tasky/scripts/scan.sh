@@ -1,5 +1,5 @@
 #!/bin/bash
-rivy container and namespace testing
+trivy container and namespace testing
 echo "Running trivy image scan on tasky"
 trivy image --severity HIGH,CRITICAL jaseflash1234/tasky:1.3
 echo
